@@ -1,114 +1,87 @@
 # Invoice Generator
 
-Buat & unduh invoice PDF profesional langsung dari browser. Isi form, lihat
-preview real-time, unduh PDF-nya. **Tanpa data yang dikirim ke server** — seluruh
-rendering terjadi di sisi klien.
+Bikin invoice PDF langsung dari browser. Isi formnya, preview-nya langsung
+kelihatan di sebelah, lalu unduh. Semua proses render terjadi di browser kamu
+sendiri, jadi tidak ada data invoice yang dikirim ke server mana pun.
 
-Dibangun sebagai side-project, siap di-host di Vercel.
+Ini project sampingan, dibuat buat dipakai sendiri dan di-host di Vercel.
 
-![Mode](https://img.shields.io/badge/PDF-client--side-000) ![Next.js](https://img.shields.io/badge/Next.js-14-000) ![License](https://img.shields.io/badge/license-MIT-blue)
+## Apa yang bisa dilakukan
 
----
+Kamu isi sendiri identitas pengirimnya: nama instansi, yayasan, judul header,
+alamat, kontak, sampai logo (PNG/JPG/GIF/WebP). Tidak ada daftar instansi yang
+dikunci di kode. Kalau sering pakai pengirim yang sama, simpan saja, nanti
+tinggal dipilih lagi tanpa ngetik ulang. Datanya cuma tersimpan di browser kamu.
 
-## ✨ Fitur
+Selain itu ada beberapa hal yang bisa diatur:
 
-- **Identitas pengirim sepenuhnya dapat dikustom** — nama instansi, yayasan,
-  judul header, alamat, kontak, dan logo (upload PNG/JPG/GIF/WebP). Tidak ada
-  daftar instansi yang di-hardcode.
-- **Simpan & pakai ulang pengirim** — simpan banyak "Pengirim" di browser
-  (localStorage), pilih lagi kapan pun tanpa mengetik ulang.
-- **Preview PDF real-time** — perubahan form langsung terlihat di panel preview.
-- **Kustomisasi tampilan** — mata uang & locale (IDR, USD, EUR, …), warna aksen
-  brand, serta baris **pajak (%)** dan **diskon** opsional dengan perhitungan
-  subtotal → pajak → diskon → total.
-- **Rincian fleksibel** — item tagihan, skema pembayaran bertahap (termin) dengan
-  Virtual Account, data penerima dinamis, dan catatan bernomor.
-- **Autosave** — draft tersimpan otomatis; refresh atau tutup tab tidak
-  menghilangkan pekerjaan.
-- **API HTTP opsional** — endpoint untuk men-generate PDF secara terprogram.
+- Mata uang dan format angka/tanggal (IDR, USD, EUR, dan lainnya)
+- Warna aksen buat header, tabel, dan total
+- Baris pajak (persen) dan diskon, kalau memang perlu
+- Item tagihan, skema pembayaran bertahap dengan nomor Virtual Account, data
+  penerima yang bisa ditambah-kurang, dan catatan
 
----
+Draft-nya juga tersimpan otomatis, jadi kalau tab ketutup atau browser ke-refresh
+isian kamu tidak hilang.
 
-## 🧱 Tech Stack
+## Cara menjalankan di lokal
 
-| | |
-|---|---|
-| Framework | Next.js 14 (App Router) |
-| Bahasa | TypeScript |
-| Form | react-hook-form + Zod |
-| PDF | @react-pdf/renderer (client & server) |
-| Styling | Tailwind CSS |
-
----
-
-## 🚀 Menjalankan Secara Lokal
-
-Prasyarat: **Node.js ≥ 18.17**.
+Butuh Node.js versi 18.17 ke atas.
 
 ```bash
-# 1. Install dependencies
 npm install
-
-# 2. (Opsional) Salin env — HANYA jika ingin memakai API HTTP.
-#    Dashboard di "/" tidak butuh env sama sekali.
-cp .env.example .env.local
-
-# 3. Jalankan dev server
 npm run dev
 ```
 
-Buka [http://localhost:3000](http://localhost:3000).
+Buka http://localhost:3000. Selesai. Dashboard-nya tidak butuh environment
+variable apa pun karena semua jalan di browser.
 
-### Script yang tersedia
+Kalau mau pakai API HTTP-nya (opsional, dijelasin di bawah), baru salin env-nya:
 
-| Perintah | Keterangan |
-|---|---|
-| `npm run dev` | Dev server (hot reload) |
-| `npm run build` | Build produksi |
-| `npm run start` | Menjalankan hasil build |
-| `npm run lint` | ESLint (via `next lint`) |
-| `npm run typecheck` | Type-check TypeScript tanpa emit |
-| `npm run render-sample` | Render `sample-invoice.pdf` (uji cepat pipeline PDF) |
+```bash
+cp .env.example .env.local
+```
 
----
+Perintah lain yang ada:
 
-## ▲ Deploy ke Vercel
+- `npm run dev` — jalan development, auto reload
+- `npm run build` — build produksi
+- `npm run start` — jalanin hasil build
+- `npm run lint` — cek ESLint
+- `npm run typecheck` — cek TypeScript
+- `npm run render-sample` — render satu PDF contoh buat ngetes
 
-1. Push repo ini ke GitHub/GitLab/Bitbucket.
-2. Di [vercel.com](https://vercel.com) → **Add New → Project** → import repo.
-   Vercel auto-mendeteksi Next.js; **tidak perlu konfigurasi build**.
-3. **Environment Variables** (opsional, hanya untuk API HTTP):
-   - `VALID_API_KEYS` — daftar API key dipisah koma. Generate dengan
-     `openssl rand -hex 32`.
-   - `ALLOWED_ORIGINS` — daftar origin CORS dipisah koma (mis.
-     `https://namaapp.vercel.app`), atau `*`.
-4. **Deploy.**
+## Deploy ke Vercel
 
-> **Catatan plan Hobby:** endpoint API di-set `maxDuration = 30` detik untuk
-> mengakomodasi render invoice besar. Route memakai Node.js runtime (bukan Edge)
-> karena `@react-pdf/renderer` butuh Node.
+Push repo ini ke GitHub, lalu di Vercel pilih Add New, Project, terus import
+repo-nya. Vercel otomatis kenal ini project Next.js, jadi tidak perlu setting
+build apa pun. Tinggal deploy.
 
-Jika hanya memakai dashboard (tanpa API), tidak ada env yang perlu diisi —
-langsung deploy saja.
+Environment variable cuma diperlukan kalau kamu mau memakai API HTTP-nya:
 
----
+- `VALID_API_KEYS` — daftar API key dipisah koma. Bikin yang acak, misalnya
+  pakai `openssl rand -hex 32`.
+- `ALLOWED_ORIGINS` — daftar origin yang boleh akses via CORS, dipisah koma,
+  atau `*` buat semua.
 
-## 🔌 API HTTP (opsional)
+Endpoint API-nya di-set punya batas waktu 30 detik supaya invoice yang besar
+tidak keburu timeout di plan Hobby, dan jalan di Node.js runtime karena library
+PDF-nya butuh itu.
 
-Dashboard tidak memakai API ini — endpoint disediakan untuk integrasi
-terprogram (mis. generate invoice dari sistem lain).
+## API HTTP (opsional)
 
-### `POST /api/v1/invoice/generate`
+Dashboard tidak memakai API ini. Endpoint-nya cuma disediakan kalau kamu mau
+generate invoice dari sistem lain secara otomatis.
 
-**Headers**
+Kirim POST ke `/api/v1/invoice/generate` dengan header:
 
 ```
-Authorization: Bearer <API_KEY>
+Authorization: Bearer API_KEY_KAMU
 Content-Type: application/json
 ```
 
-**Body** — kirim identitas inline lewat `issuer`, **atau** rujuk preset lewat
-`template_id`:
+Body-nya seperti ini. Identitas pengirim bisa dikirim langsung lewat `issuer`,
+atau kalau mau merujuk preset bawaan pakai `template_id` (salah satu wajib ada):
 
 ```jsonc
 {
@@ -118,17 +91,17 @@ Content-Type: application/json
     "headerTitle": "INVOICE PEMBAYARAN",
     "address": "Jl. Merdeka No. 45, Jakarta Pusat 10110",
     "contact": "(021) 555-0123 · keuangan@sekolah.id",
-    "logoDataUri": ""                    // opsional: data URI PNG/JPG/GIF/WebP
+    "logoDataUri": ""
   },
-  "settings": {                          // opsional; ada default
-    "currency": "IDR",                   // IDR | USD | EUR | GBP | SGD | MYR | JPY | AUD
-    "locale": "id-ID",                   // id-ID | en-US | en-GB | de-DE | ms-MY | ja-JP
+  "settings": {
+    "currency": "IDR",
+    "locale": "id-ID",
     "accentColor": "#0F766E",
     "tax": { "enabled": true, "label": "PPN", "rate": 11 },
     "discount": { "enabled": false, "label": "Diskon", "amount": 0 }
   },
   "invoice_number": "INV/2026/07/001",
-  "date": "2026-07-31",                  // ISO 8601 (YYYY-MM-DD)
+  "date": "2026-07-31",
   "recipient": {
     "fields": [
       { "label": "Nama", "value": "Budi Santoso" },
@@ -138,27 +111,18 @@ Content-Type: application/json
   "items": [
     { "no": 1, "description": "Biaya Pendaftaran", "amount": 500000, "va": "8801234567890" }
   ],
-  "payment_schemes": [],                 // opsional
-  "notes": ["Simpan bukti pembayaran."], // opsional
+  "payment_schemes": [],
+  "notes": ["Simpan bukti pembayaran."],
   "signatory": { "position": "Kepala Keuangan", "name": "Dr. Siti Aminah, M.M." },
   "output": "pdf"
 }
 ```
 
-> `issuer` **atau** `template_id` wajib ada (salah satu). `template_id`
-> dipertahankan untuk kompatibilitas — di-resolve terhadap preset di server.
+Kalau berhasil, responsnya langsung file PDF. Kalau gagal: 401 berarti API
+key-nya salah atau tidak ada, 413 kalau body-nya lebih dari 2 MB, 422 kalau
+JSON-nya tidak valid, dan 500 kalau render-nya gagal.
 
-**Respon**
-
-| Status | Arti |
-|---|---|
-| `200` | Sukses — body = PDF (`Content-Type: application/pdf`) |
-| `401` | API key hilang / tidak valid |
-| `413` | Body > 2 MB |
-| `422` | JSON tidak valid / gagal validasi |
-| `500` | Gagal render PDF |
-
-**Contoh cURL**
+Contoh pakai cURL:
 
 ```bash
 curl -X POST https://namaapp.vercel.app/api/v1/invoice/generate \
@@ -168,51 +132,42 @@ curl -X POST https://namaapp.vercel.app/api/v1/invoice/generate \
   --output invoice.pdf
 ```
 
-### Batasan (guard produksi)
+Ada beberapa batasan supaya aman: body maksimal 2 MB, logo maksimal sekitar
+800 KB dan harus raster (PNG/JPG/GIF/WebP, SVG tidak didukung), maksimal 200
+item, 50 skema pembayaran, 100 catatan, dan 50 field penerima. Mata uang dan
+locale juga dibatasi ke daftar yang didukung supaya tidak error waktu render.
 
-- Body maksimal **2 MB**; logo maksimal ~800 KB (raster: PNG/JPG/GIF/WebP —
-  SVG tidak didukung oleh renderer).
-- Maks 200 item, 50 skema pembayaran, 100 catatan, 50 field penerima.
-- `currency` & `locale` dibatasi ke set yang didukung agar tidak memicu error
-  format saat render.
-
----
-
-## 📁 Struktur Proyek
+## Susunan kode
 
 ```
 src/
-├── app/
-│   ├── page.tsx                    # Halaman dashboard
-│   ├── layout.tsx                  # Root layout + font
-│   └── api/v1/invoice/generate/    # Endpoint API (POST)
-├── components/
-│   ├── dashboard/                  # Form, section, field, preview
-│   └── pdf/                        # Komponen @react-pdf (Header, ItemsTable, …)
-└── lib/
-    ├── schema/invoice.ts           # Kontrak payload API (Zod) — sumber kebenaran
-    ├── schema/invoiceForm.ts       # Schema form + default + sample
-    ├── format.ts                   # formatMoney / computeTotals (1 sumber math)
-    ├── senders.ts                  # Simpan pengirim (localStorage)
-    ├── useAutosave.ts              # Autosave draft
-    └── templates/registry.ts       # Preset issuer + resolveIssuer
+  app/
+    page.tsx                    halaman dashboard
+    layout.tsx                  root layout dan font
+    api/v1/invoice/generate/    endpoint API
+  components/
+    dashboard/                  form, section, field, preview
+    pdf/                        komponen PDF (Header, ItemsTable, dan lainnya)
+  lib/
+    schema/invoice.ts           kontrak payload API
+    schema/invoiceForm.ts       schema form, default, contoh
+    format.ts                   format uang dan hitung total
+    senders.ts                  simpan pengirim di browser
+    useAutosave.ts              autosave draft
+    templates/registry.ts       preset pengirim
 ```
 
-**Prinsip arsitektur:** identitas pengirim adalah bagian payload yang
-dapat diedit user (bukan registry server yang terkunci). Semua perhitungan uang
-melewati `computeTotals` di `src/lib/format.ts`, dipakai bersama oleh footer form
-live dan PDF agar selalu konsisten.
+Satu hal yang perlu diingat kalau nanti mau ngoprek: identitas pengirim itu
+bagian dari data yang diisi user, bukan daftar yang dikunci di server. Dan semua
+perhitungan uang lewat satu fungsi di `src/lib/format.ts`, dipakai bareng sama
+footer di form dan PDF-nya, biar angkanya selalu sama.
 
----
+## Soal privasi
 
-## 🔐 Privasi
+Dashboard bikin PDF sepenuhnya di browser. Data invoice tidak dikirim ke server
+atau pihak ketiga. Pengirim yang kamu simpan cuma ada di browser perangkatmu.
+API HTTP-nya terpisah dan sifatnya opsional.
 
-Dashboard men-generate PDF **sepenuhnya di browser** — tidak ada data invoice
-yang dikirim ke server atau pihak ketiga. Pengirim tersimpan hanya di
-localStorage perangkat Anda. API HTTP bersifat opsional dan terpisah.
+## Lisensi
 
----
-
-## 📄 Lisensi
-
-MIT — bebas dipakai dan dimodifikasi.
+MIT, bebas dipakai dan diubah.
