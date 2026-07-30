@@ -14,6 +14,9 @@ export function Header({ issuer, theme }: { issuer: Issuer; theme: PdfTheme }) {
   const hasLogo = Boolean(issuer.logoDataUri && issuer.logoDataUri.length > 0);
   return (
     <View style={[styles.headerContainer, { borderBottomColor: theme.accent }]}>
+      {/* This is @react-pdf/renderer's <Image>, a PDF primitive with no `alt`
+          concept — not an <img>/next Image, so the a11y rule doesn't apply. */}
+      {/* eslint-disable-next-line jsx-a11y/alt-text */}
       {hasLogo ? <Image src={issuer.logoDataUri} style={styles.logo} /> : null}
       {issuer.foundationName ? (
         <Text style={styles.foundationName}>{issuer.foundationName}</Text>

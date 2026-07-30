@@ -17,6 +17,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
+  ),
   title: "Invoice Generator — Buat & Unduh PDF",
   description:
     "Buat invoice PDF profesional langsung di browser. Isi form, lihat preview langsung, unduh. Tanpa data terkirim ke server.",

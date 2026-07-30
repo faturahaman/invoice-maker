@@ -8,7 +8,11 @@ import { extractBearerToken, isValidApiKey } from "@/lib/api/auth";
 import { getCorsHeaders } from "@/lib/api/cors";
 import { jsonError, zodErrorDetails } from "@/lib/api/errors";
 
+// @react-pdf/renderer needs the Node.js runtime (not Edge).
 export const runtime = "nodejs";
+// PDF rendering can take a few seconds for large invoices; raise the ceiling
+// above Vercel's 10s Hobby default so complex documents don't time out.
+export const maxDuration = 30;
 
 /**
  * Public invoice generation endpoint.

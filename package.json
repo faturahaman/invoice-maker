@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "render-sample": "tsx scripts/render-sample.tsx"
+  },
+  "engines": {
+    "node": ">=18.17.0"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
